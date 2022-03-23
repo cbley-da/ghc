@@ -2342,13 +2342,13 @@ tyapp :: { Located TyEl }
         | unpackedness                  { sL1 $1 $ TyElUnpackedness (unLoc $1) }
 
 arecord_with :: { LHsType GhcPs }
-        : 'with' '{' fielddecls '}'      {% amms (checkRecordSyntax
+        : 'with' '{' fielddecls '}'       {% amms (checkRecordSyntax
                                                     (sLL $2 $> $ HsRecTy noExt $3))
                                                         -- Constructor sigs only
                                                  [moc $2,mcc $4] }
-        | 'with' vocurly fielddecls close {% checkRecordSyntax
-                                                (L (comb2 $2 (last (void $2 : map void $3)))
-                                                 $ HsRecTy noExt $3) }
+        | 'with' vocurly fielddecls close {% amms (checkRecordSyntax
+                                                    (L (comb2 $2 (last (void $2 : map void $3))) $ HsRecTy noExt $3))
+                                                 [mj AnnWith $1] }
 
 atype_ :: { LHsType GhcPs }
         : ntgtycon                       { sL1 $1 (HsTyVar noExt NotPromoted $1) }      -- Not including unit tuples
